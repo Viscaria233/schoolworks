@@ -48,52 +48,70 @@ void AddTwoWayArc(Graph *g, int from, int to) {
     AddArc(g, to, from);
 }
 
-void visit(Node *n) {
-    printf("%d ", n->Data);
-}
-
-void DFS(Graph *g, int n, int *visited) {
-    Node *node = g->Nodes + n;
-    visit(node);
-    visited[n] = 1;
-    for (Arc *p = node->ArcHead->Next; p != NULL; p = p->Next) {
-        if (visited[p->To] == 0) {
-            DFS(g, p->To, visited);
+int Check(Node *n, int color, int *visited) {
+    for (Arc *p = n->ArcHead->Next; p != NULL; p = p->Next) {
+        if (visited[p->To] == color) {
+            return 0;
         }
     }
+    return 1;
 }
 
-void DFS(Graph *g) {
+int Color(Graph *g, int nodeIndex, int colorCount, int *visited) {
+    int found = 0;
+
+    if (nodeIndex == g->NodeCount) {
+        for (int i = 0; i < g->NodeCount; ++i) {
+            printf("%4d", visited[i]);
+        }
+        printf("\n");
+        return 1;
+    }
+
+    if (visited[nodeIndex] == -1) {
+        for (int j = 0; j < colorCount; ++j) {
+            if (Check(g->Nodes + nodeIndex, j, visited) == 1) {
+                visited[nodeIndex] = j;
+                found += Color(g, nodeIndex + 1, colorCount, visited);
+                visited[nodeIndex] = -1;
+            }
+        }
+    }
+    return found;
+}
+
+int Color(Graph *g, int colorCount) {
     int *visited = (int*)malloc(g->NodeCount * sizeof(int));
     for (int i = 0; i < g->NodeCount; ++i) {
-        visited[i] = 0;
+        visited[i] = -1;
     }
-    for (int i = 0; i < g->NodeCount; ++i) {
-        if (visited[i] == 0) {
-            DFS(g, i, visited);
-        }
-    }
+    int result = Color(g, 0, colorCount, visited);
     free(visited);
+    return result;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
 {
     Graph *g = (Graph*)malloc(sizeof(Graph));
-    Init(g, 10);
 
-    for (int i = 0; i < 10; ++i) {
-        Node *node = (Node*)malloc(sizeof(Node));
-        Init(node, i);
-        g->Nodes[i] = *node;
+    Init(g, 4);
+
+    for (int i = 0; i < g->NodeCount; ++i) {
+        Node node;
+        Init(&node, i);
+        g->Nodes[i] = node;
     }
 
-    int from[] = { 0, 1, 4, 8, 5, 5, 2, 3, 6, 7, 7 };
-    int to[] = { 1, 4, 8, 5, 2, 1, 3, 6, 7, 3, 9 };
-    for (int i = 0; i < 11; ++i) {
+    int from[] = { 0, 0, 1, 1 };
+    int to[] = { 1, 2, 2, 3 };
+    for (int i = 0; i < 4; ++i) {
         AddTwoWayArc(g, from[i], to[i]);
     }
-    DFS(g);
+
+    int found = Color(g, 3);
+    printf("%d result(s) found\n", found);
+    free(g);
     getchar();
-	return 0;
+    return 0;
 }
 
