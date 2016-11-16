@@ -1,0 +1,82 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<span>记录个数：</span><span id="count">0</span><br />
+<input type="button" value="添加" id="btn_add" />
+<input type="button" value="删除" id="btn_rm" />
+<span id="tip" style="color:red;"></span>
+<table id="tb" class="tb">
+    <tr align="center" >
+        <td>全选<input type="checkbox" id="check_all" /></td>
+        <td>序号</td>
+        <td>科目</td>
+        <td>成绩</td>
+    </tr>
+</table>
+<br /><br />
+
+
+
+
+
+
+@section scripts{
+    <script>
+        function addTr(id, subject, score){
+            $("#tb").append(
+                "<tr align=\"center\">" +
+                    "<td><input type=\"checkbox\" name=\"check\"></td>" +
+                    "<td>" + id + "</td>" +
+                    "<td>" + subject + "</td>" +
+                    "<td>" + score + "</td>" +
+                "</tr>"
+            );
+        }
+
+        $(document).ready(function () {
+            var count = 1;
+            $("#btn_add").click(function () {
+                addTr(count++, "数学", 60);
+                $("#count").html($("table tr").size());
+            });
+
+            $("#btn_rm").click(function () {
+                var checks = $("input[name='check']:checked");
+                if (checks.size() == 0) {
+                    alert("请选择至少1行");
+                } else {
+                    checks.each(function () {
+                        $(this).parent().parent().remove();
+                    });
+                }
+                $("#tip").html("删除了" + checks.size() + "行").show().fadeOut(2000);
+            });
+
+            $("#check_all").change(function () {
+                $("[name='check']:checkbox").prop("checked", this.checked);
+            });
+
+            $("#tb").on("mouseover", "tr:gt(0)", function () {
+                $(this).addClass("tr_current");
+            }).on("mouseout", "tr:gt(0)", function () {
+                $(this).removeClass();
+            });
+        });
+    </script>
+}
+
+<style>
+    .tr_current {
+        background-color: red;
+        cursor: pointer;
+    }
+    .tb{
+        width:300px;
+    }
+    .tb td{
+        border:inset;
+    }
+</style>
