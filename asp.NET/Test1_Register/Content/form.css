@@ -1,0 +1,15 @@
+﻿.star {
+    color:red;
+}
+.tip {
+    color:red;
+}
+.td_text {
+    text-align:right;
+}
+.td_widget {
+    text-align:left;
+}
+.ui-datepicker-calendar { 
+    display: none; 
+} 

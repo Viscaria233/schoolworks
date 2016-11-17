@@ -1,0 +1,82 @@
+﻿@{
+    ViewBag.Title = "Register";
+}
+
+<table>
+    <tr>
+        <td class="td_text">用户名</td>
+        <td class="td_widget">
+            @Model.username
+        </td>
+    </tr>
+    <tr>
+        <td class="td_text">密码</td>
+        <td class="td_widget">
+            @Model.password
+        </td>
+    </tr>
+    <tr>
+        <td class="td_text">性别</td>
+        <td class="td_widget">
+            @Model.sex
+        </td>
+    </tr>
+    <tr>
+        <td class="td_text">籍贯</td>
+        <td class="td_widget">
+            @Model.province<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>@Model.region
+        </td>
+    </tr>
+    <tr>
+        <td class="td_text">Email</td>
+        <td class="td_widget">
+            @Model.email
+        </td>
+    </tr>
+    <tr>
+        <td class="td_text">手机号</td>
+        <td class="td_widget">
+            @Model.mobile
+        </td>
+    </tr>
+    <tr>
+        <td class="td_text">专业擅长</td>
+        <td class="td_widget">
+            @Model.major
+        </td>
+    </tr>
+    <tr>
+        <td class="td_text">业余爱好</td>
+        <td class="td_widget">
+            @Model.hobbies
+        </td>
+    </tr>
+    <tr>
+        <td class="td_text">个人照片</td>
+        <td class="td_widget">
+            <img src=@Model.photo />
+        </td>
+    </tr>
+    <tr>
+        <td class="td_text">出生年月</td>
+        <td class="td_widget">
+            @Model.birthYM
+        </td>
+    </tr>
+    <tr>
+        <td class="td_text">备注信息</td>
+        <td class="td_widget">
+            @Model.remark
+        </td>
+    </tr>
+</table>
+
+<style>
+    .td_text {
+        text-align: right;
+    }
+
+    .td_widget {
+        text-align: left;
+    }
+</style>
