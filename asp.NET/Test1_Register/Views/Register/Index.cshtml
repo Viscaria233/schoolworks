@@ -22,7 +22,7 @@
         <tr>
             <td class="td_text"><span class="star">*</span>密码</td>
             <td class="td_widget">
-                <input type="password" id="password" name="password" onblur="checkPassword()" /><span id="password_tip" class="tip"></span>
+                <input type="password" id="password" name="password" onblur="checkPassword(); checkConfirm();" /><span id="password_tip" class="tip"></span>
             </td>
         </tr>
         <tr>
@@ -57,19 +57,21 @@
         <tr>
             <td class="td_text"><span class="star">*</span>Email</td>
             <td class="td_widget">
-                <input type="email" id="email" name="email" onblur="checkEmail()" /><span id="email_tip" class="tip"></span>
+                <input type="email" id="email" name="email" placeholder="如 wustzz@163.com" onblur="checkEmail()" />
+                <span id="email_tip" class="tip"></span>
             </td>
         </tr>
         <tr>
             <td class="td_text"><span class="star">*</span>手机号</td>
             <td class="td_widget">
-                <input type="tel" id="mobile" name="mobile" onblur="checkMobile()" /><span id="mobile_tip" class="tip"></span>
+                <input type="tel" id="mobile" name="mobile" placeholder="11位，全数字" onblur="checkMobile()" />
+                <span id="mobile_tip" class="tip"></span>
             </td>
         </tr>
         <tr>
             <td class="td_text">专业擅长</td>
             <td class="td_widget">
-                <select size="5" id="select_major" name="major">
+                <select size="5" id="select_major" name="major" multiple="multiple">
                     <option value="Windows编程">Windows编程</option>
                     <option value="单片机编程">单片机编程</option>
                     <option value="ASP.NET编程">ASP.NET编程</option>
@@ -105,7 +107,8 @@
         <tr>
             <td class="td_text">备注信息</td>
             <td class="td_widget">
-                <textarea rows="5" id="textarea_remark" name="remark" ></textarea><span id="remark_tip" class="tip"></span>
+                <textarea rows="5" id="textarea_remark" name="remark" placeholder="可以补充一下" ></textarea>
+                <span id="remark_tip" class="tip"></span>
             </td>
         </tr>
         <tr>
@@ -129,7 +132,6 @@
                 changeMonth: true,
                 changeYear: true,
                 yearRange:"1800:2016",
-                showButtonPanel: true,
                 dateFormat: "MM yy",
                 onClose: function (dateText, inst) {
                     var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();

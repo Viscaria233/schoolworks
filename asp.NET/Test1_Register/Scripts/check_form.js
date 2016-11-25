@@ -4,13 +4,32 @@
     var usernameTip = document.getElementById("username_tip");
 
     var reg = /^[a-z]{6,10}$/;
-    if (!reg.test(username.value) || username.value == "wustzz") {
+    //if (!reg.test(username.value) || username.value == "wustzz") {
+
+    if (!reg.test(username.value) || !checkWustzz(username.value)) {
         usernameTip.innerHTML = "6~10个小写字母，且不能为\"wustzz\"";
         return false;
     } else {
         usernameTip.innerHTML = "OK";
         return true;
     }
+}
+
+function checkWustzz(username) {
+    var success = false;
+    $.ajax({
+        type: "POST",
+        url: "/Register/CheckWustzz",
+        data: { "username": username },
+        async: false,
+        success: function (sesponseTest) {
+            if (sesponseTest == "True") {
+                success = true;
+            }
+            return;
+        }
+    });
+    return success;
 }
 
 function checkPassword()
@@ -34,7 +53,10 @@ function checkConfirm()
     var confirm = document.getElementById("confirm_password");
     var confirmTip = document.getElementById("confirm_tip");
 
-    if (confirm.value != password.value) {
+    if (confirm.value == "") {
+        confirmTip.innerHTML = "不能为空";
+        return false;
+    } else if (confirm.value != password.value) {
         confirmTip.innerHTML = "输入不一致";
         return false;
     } else {

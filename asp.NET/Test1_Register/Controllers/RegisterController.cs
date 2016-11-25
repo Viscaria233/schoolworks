@@ -34,7 +34,13 @@ namespace Test1_Register.Controllers
                 catch {}
             }
             user.hobbies = Request.Form["hobbies"];
+            user.major = Request.Form["major"];
             return View(user);
+        }
+
+        public bool CheckWustzz(string username)
+        {
+            return !(username == "wustzz");
         }
     }
 }
