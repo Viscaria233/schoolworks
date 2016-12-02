@@ -27,7 +27,13 @@
             @Html.LabelFor(model => model.ReleaseDate)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.ReleaseDate)
+            @*@Html.EditorFor(model => model.ReleaseDate)*@
+            <input class="text-box single-line"
+                    data-val="true"
+                    data-val-date="字段 ReleaseDate 必须是日期。"
+                    data-val-required="字段 ReleaseDate 是必需的"
+                    id="ReleaseDate" name="ReleaseDate" type="date" />
+
             @Html.ValidationMessageFor(model => model.ReleaseDate)
         </div>
 
@@ -67,4 +73,21 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $("#ReleaseDate").ready(function () {
+            debugger
+            var input = document.getElementById("ReleaseDate");
+            var attrs = "@Model.ReleaseDate".split(" ", 1)[0].split("/", 3);
+            console.log(attrs);
+            if (attrs[1] < 10) {
+                attrs[1] = "0" + attrs[1];
+            }
+            if (attrs[2] < 10) {
+                attrs[2] = "0" + attrs[2];
+            }
+            var date = attrs[0] + "-" + attrs[1] + "-" + attrs[2];
+            console.log(date);
+            input.value = date;
+        });
+    </script>
 }
