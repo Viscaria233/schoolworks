@@ -4,11 +4,47 @@
     ViewBag.Title = "MovieList";
 }
 
-<h2>Index</h2>
+<h2>MovieList</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
+    <a href="~/Home/ShowAllMovies"><input type="button" value="Show All Movies" /></a>
 </p>
+<div class="search-genre-title">
+    <form action="~/Home/SearchByGenreAndTitle" method="post">
+        Genre
+        <select name="S_Genre" size="1">
+            <option value="all">all</option>
+            @{
+                var genres = new List<string>();
+                foreach (var m in Model)
+                {
+                    if (!genres.Contains(@m.Genre))
+                    {
+                        <option value=@m.Genre>@m.Genre</option>
+                        genres.Add(@m.Genre);
+                    }
+
+                }
+            }
+            
+        </select>
+        Title<input name="S_Title" /><input type="submit" value="Search" />
+    </form>
+</div>
+<div class="search-released">
+    <form action="~/Home/SearchByReleased" method="post">
+        <input type="radio" name="S_Released" value="true" checked="checked" />Released&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="S_Released" value="false" />Unreleased&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="submit" value="Search" />
+    </form>
+</div>
+<div class="search-price">
+    <form action="~/Home/SearchByPrice" method="post">
+        Price >= <input type="number" name="S_MinPrice" /> and <= <input type="number" name="S_MaxPrice" />
+        <input type="submit" value="Search" />
+    </form>
+</div>
 <table>
     <tr>
         <th>

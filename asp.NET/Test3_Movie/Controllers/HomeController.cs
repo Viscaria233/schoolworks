@@ -12,13 +12,25 @@ namespace Test3_Movie.Controllers
     public class HomeController : Controller
     {
         private MovieDbContext db = new MovieDbContext();
+        private static List<int> searchResultID = null;
 
         //
         // GET: /Home/
 
         public ActionResult Index()
         {
-            return View(db.Movies.ToList());
+            if (searchResultID == null)
+            {
+                return View(db.Movies.ToList());
+            }
+            else
+            {
+                var list = from m in db.Movies
+                           where searchResultID.Contains(m.ID)
+                           select m;
+                return View(list);
+            }
+            
         }
 
         //
@@ -53,7 +65,7 @@ namespace Test3_Movie.Controllers
             {
                 db.Movies.Add(movie);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("ShowAllMovies");
             }
 
             return View(movie);
@@ -118,6 +130,69 @@ namespace Test3_Movie.Controllers
         {
             db.Dispose();
             base.Dispose(disposing);
+        }
+
+        [HttpPost]
+        public ActionResult SearchByGenreAndTitle()
+        {
+            var genre = Request.Form["S_Genre"];
+            var title = Request.Form["S_Title"];
+            var result = from m in db.Movies
+                         where (genre == "all" || m.Genre.Equals(genre))
+                                && m.Title.Contains(title)
+                         select m.ID;
+            searchResultID = result.ToList();
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult SearchByReleased()
+        {
+            bool released = Boolean.Parse(Request.Form["S_Released"]);
+            var result = from m in db.Movies
+                         where DateTime.Now.CompareTo(m.ReleaseDate) * (released ? 1 : -1) > 0
+                         select m.ID;
+            searchResultID = result.ToList();
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult SearchByPrice()
+        {
+            var minPrice = Request.Form["S_MinPrice"];
+            var maxPrice = Request.Form["S_MaxPrice"];
+            if (minPrice != "" && maxPrice != "")
+            {
+                decimal min = Decimal.Parse(minPrice);
+                decimal max = Decimal.Parse(maxPrice);
+                var result = from m in db.Movies
+                             where m.Price >= min && m.Price <= max
+                             select m.ID;
+                searchResultID = result.ToList();
+            }
+            else if (minPrice != "")
+            {
+                decimal min = Decimal.Parse(minPrice);
+                var result = from m in db.Movies
+                             where m.Price >= min
+                             select m.ID;
+                searchResultID = result.ToList();
+            }
+            else
+            {
+                decimal max = Decimal.Parse(maxPrice);
+                var result = from m in db.Movies
+                             where m.Price <= max
+                             select m.ID;
+                searchResultID = result.ToList();
+            }
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult ShowAllMovies()
+        {
+            searchResultID = null;
+            return RedirectToAction("Index");
         }
     }
 }

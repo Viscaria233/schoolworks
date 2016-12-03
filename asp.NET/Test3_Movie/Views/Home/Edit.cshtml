@@ -75,19 +75,7 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script>
         $("#ReleaseDate").ready(function () {
-            debugger
-            var input = document.getElementById("ReleaseDate");
-            var attrs = "@Model.ReleaseDate".split(" ", 1)[0].split("/", 3);
-            console.log(attrs);
-            if (attrs[1] < 10) {
-                attrs[1] = "0" + attrs[1];
-            }
-            if (attrs[2] < 10) {
-                attrs[2] = "0" + attrs[2];
-            }
-            var date = attrs[0] + "-" + attrs[1] + "-" + attrs[2];
-            console.log(date);
-            input.value = date;
+            document.getElementById("ReleaseDate").value = "@Model.ReleaseDate.ToString("yyyy-MM-dd")";
         });
     </script>
 }
