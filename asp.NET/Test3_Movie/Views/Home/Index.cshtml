@@ -9,42 +9,51 @@
 <p>
     @Html.ActionLink("Create New", "Create")
     <a href="~/Home/ShowAllMovies"><input type="button" value="Show All Movies" /></a>
+    &nbsp;&nbsp;&nbsp;&nbsp;<a href="~/Home/Back"><input type="button" value="Back" /></a>
 </p>
-<div class="search-genre-title">
-    <form action="~/Home/SearchByGenreAndTitle" method="post">
-        Genre
-        <select name="S_Genre" size="1">
-            <option value="all">all</option>
-            @{
-                var genres = new List<string>();
-                foreach (var m in Model)
-                {
-                    if (!genres.Contains(@m.Genre))
+<div class="search">
+    <form action="~/Home/Search" method="post">
+        <div class="search-genre-title">
+            Genre
+            <select name="S_Genre" size="1">
+                <option value="all">all</option>
+                @{
+                    var genres = new List<string>();
+                    foreach (var m in Model)
                     {
-                        <option value=@m.Genre>@m.Genre</option>
-                        genres.Add(@m.Genre);
-                    }
+                        if (!genres.Contains(@m.Genre))
+                        {
+                            <option value=@m.Genre>@m.Genre</option>
+                            genres.Add(@m.Genre);
+                        }
 
+                    }
                 }
-            }
-            
-        </select>
-        Title<input name="S_Title" /><input type="submit" value="Search" />
-    </form>
-</div>
-<div class="search-released">
-    <form action="~/Home/SearchByReleased" method="post">
-        <input type="radio" name="S_Released" value="true" checked="checked" />Released&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="radio" name="S_Released" value="false" />Unreleased&nbsp;&nbsp;&nbsp;&nbsp;
+            </select>&nbsp;
+            Title<input id="S_Title" name="S_Title" />
+        </div>
+        <div class="search-released">
+            <input type="radio" name="S_Released" value="0" />All&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="S_Released" value="1" />Released&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="S_Released" value="-1" />Unreleased
+        </div>
+        <div class="search-price">
+            Price&nbsp;
+            <select id="S_IncludeMin" name="S_IncludeMin" size="1">
+                <option value="true">>=</option>
+                <option value="false">></option>
+            </select>&nbsp;
+            <input type="number" name="S_MinPrice" /> and&nbsp;
+            <select id="S_IncludeMax" name="S_IncludeMax" size="1">
+                <option value="true"><=</option>
+                <option value="false"><</option>
+            </select>&nbsp;
+            <input type="number" name="S_MaxPrice" />
+        </div>
         <input type="submit" value="Search" />
     </form>
 </div>
-<div class="search-price">
-    <form action="~/Home/SearchByPrice" method="post">
-        Price >= <input type="number" name="S_MinPrice" /> and <= <input type="number" name="S_MaxPrice" />
-        <input type="submit" value="Search" />
-    </form>
-</div>
+
 <table>
     <tr>
         <th>
@@ -91,3 +100,22 @@
 }
 
 </table>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            @{
+                var input = (Test3_Movie.Models.SearchInput)ViewData["Input"];
+            }
+            $(".search-genre-title").find("option[value='@input.genre']").attr("selected", "selected");
+            $("#S_Title").attr("value", "@input.title");
+            $(".search-released").find("input[value='@input.released']").attr("checked", "checked");
+            $("#S_IncludeMin").find("option[value='@input.includeMin.ToString().ToLower()']")
+                .attr("selected", "selected");
+            $("#S_IncludeMax").find("option[value='@input.includeMax.ToString().ToLower()']")
+                .attr("selected", "selected");
+            $("input[name='S_MinPrice']").attr("value", "@input.validMin" == "True" ? "@input.minPrice" : "");
+            $("input[name='S_MaxPrice']").attr("value", "@input.validMax" == "True" ? "@input.maxPrice" : "");
+        });
+    </script>
+}

@@ -15,6 +15,7 @@ namespace Test3_Movie.Models
 
         [DataType(DataType.Date, ErrorMessage = "字段 ReleaseDate 必须是日期")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "字段 ReleaseDate 是必需的")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime ReleaseDate { get; set; }
 
 

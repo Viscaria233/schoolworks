@@ -12,21 +12,32 @@ namespace Test3_Movie.Controllers
     public class HomeController : Controller
     {
         private MovieDbContext db = new MovieDbContext();
-        private static List<int> searchResultID = null;
+        private static Stack<List<int>> searchHistory = new Stack<List<int>>();
+        private static Stack<SearchInput> inputHistory = new Stack<SearchInput>();
 
         //
         // GET: /Home/
 
         public ActionResult Index()
         {
-            if (searchResultID == null)
+            if (inputHistory.Count == 0)
+            {
+                ViewData["Input"] = new SearchInput();
+            }
+            else
+            {
+                ViewData["Input"] = inputHistory.Peek();
+            }
+
+            if (searchHistory.Count == 0)
             {
                 return View(db.Movies.ToList());
             }
             else
             {
+                var peek = searchHistory.Peek();
                 var list = from m in db.Movies
-                           where searchResultID.Contains(m.ID)
+                           where peek.Contains(m.ID)
                            select m;
                 return View(list);
             }
@@ -133,65 +144,48 @@ namespace Test3_Movie.Controllers
         }
 
         [HttpPost]
-        public ActionResult SearchByGenreAndTitle()
-        {
-            var genre = Request.Form["S_Genre"];
-            var title = Request.Form["S_Title"];
-            var result = from m in db.Movies
-                         where (genre == "all" || m.Genre.Equals(genre))
-                                && m.Title.Contains(title)
-                         select m.ID;
-            searchResultID = result.ToList();
-            return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        public ActionResult SearchByReleased()
-        {
-            bool released = Boolean.Parse(Request.Form["S_Released"]);
-            var result = from m in db.Movies
-                         where DateTime.Now.CompareTo(m.ReleaseDate) * (released ? 1 : -1) > 0
-                         select m.ID;
-            searchResultID = result.ToList();
-            return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        public ActionResult SearchByPrice()
+        public ActionResult Search()
         {
             var minPrice = Request.Form["S_MinPrice"];
             var maxPrice = Request.Form["S_MaxPrice"];
-            if (minPrice != "" && maxPrice != "")
+
+            var input = new SearchInput
             {
-                decimal min = Decimal.Parse(minPrice);
-                decimal max = Decimal.Parse(maxPrice);
-                var result = from m in db.Movies
-                             where m.Price >= min && m.Price <= max
-                             select m.ID;
-                searchResultID = result.ToList();
-            }
-            else if (minPrice != "")
-            {
-                decimal min = Decimal.Parse(minPrice);
-                var result = from m in db.Movies
-                             where m.Price >= min
-                             select m.ID;
-                searchResultID = result.ToList();
-            }
-            else
-            {
-                decimal max = Decimal.Parse(maxPrice);
-                var result = from m in db.Movies
-                             where m.Price <= max
-                             select m.ID;
-                searchResultID = result.ToList();
-            }
+                genre = Request.Form["S_Genre"],
+                title = Request.Form["S_Title"],
+                released = Int32.Parse(Request.Form["S_Released"]),
+                minPrice = minPrice != "" ? Decimal.Parse(minPrice) : 0,
+                maxPrice = maxPrice != "" ? Decimal.Parse(maxPrice) : 0,
+                includeMin = Boolean.Parse(Request.Form["S_IncludeMin"]),
+                includeMax = Boolean.Parse(Request.Form["S_IncludeMax"]),
+                validMin = minPrice != "",
+                validMax = maxPrice != ""
+            };
+            inputHistory.Push(input);
+
+            var searchUtil = new SearchUtil { input = input };
+            var result = searchUtil.search(db, searchHistory.Count != 0 ? searchHistory.Peek() : null);
+            searchHistory.Push(result);
             return RedirectToAction("Index");
         }
 
         public ActionResult ShowAllMovies()
         {
-            searchResultID = null;
+            searchHistory.Clear();
+            inputHistory.Clear();
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult Back()
+        {
+            if (searchHistory.Count != 0)
+            {
+                searchHistory.Pop();
+            }
+            if (inputHistory.Count != 0)
+            {
+                inputHistory.Pop();
+            }
             return RedirectToAction("Index");
         }
     }

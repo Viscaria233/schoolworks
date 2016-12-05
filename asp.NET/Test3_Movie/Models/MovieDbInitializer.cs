@@ -10,37 +10,24 @@ namespace Test3_Movie.Models
     {
         protected override void Seed(MovieDbContext context)
         {
-            context.Movies.Add(new Movie {
-                Title = "你的名字",
-                ReleaseDate = new DateTime(2016, 12, 2),
-                Genre = "animation",
-                Price = 20,
-                Rating = "G"
-            });
-            context.Movies.Add(new Movie
+            string[] titles = { "你的名字", "AAA", "CCbbCCaC", "bBBaaab", "我的名字", "他的名字", "小学生开学啦" };
+            int[] years = { 2016, 2015, 2017, 2016, 2017, 2013, 2017 };
+            int[] months = { 12, 1, 2, 12, 5, 9, 9 };
+            int[] days = { 2, 4, 1, 2, 16, 22, 1 };
+            string[] genres = { "animation", "what", "what", "nowhat", "animation", "what", "horror" };
+            decimal[] prices = { 20, 30, 15, 20, 19.9M, 20.1M, 0.5M };
+            string[] ratings = { "G", "xxx", "xx", "fgbn", "G", "G", "N" };
+            
+            for (int i = 0; i < titles.Length; ++i)
             {
-                Title = "AAA",
-                ReleaseDate = new DateTime(2015, 1, 4),
-                Genre = "what",
-                Price = 30,
-                Rating = "xxx"
-            });
-            context.Movies.Add(new Movie
-            {
-                Title = "CCCCC",
-                ReleaseDate = new DateTime(2017, 2, 1),
-                Genre = "what",
-                Price = 15,
-                Rating = "xx"
-            });
-            context.Movies.Add(new Movie
-            {
-                Title = "bbbAAAb",
-                ReleaseDate = new DateTime(2016, 12, 2),
-                Genre = "nowhat",
-                Price = 20,
-                Rating = "fgbn"
-            }); 
+                context.Movies.Add(new Movie{
+                    Title = titles[i],
+                    ReleaseDate = new DateTime(years[i], months[i], days[i]),
+                    Genre = genres[i],
+                    Price = prices[i],
+                    Rating = ratings[i]
+                });
+            }
             base.Seed(context);
         }
     }
