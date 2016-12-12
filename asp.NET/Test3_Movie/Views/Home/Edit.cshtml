@@ -27,12 +27,12 @@
             @Html.LabelFor(model => model.ReleaseDate)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.ReleaseDate)
-            @*<input class="text-box single-line"
+            @*@Html.EditorFor(model => model.ReleaseDate)*@
+            <input class="text-box single-line"
                     data-val="true"
                     data-val-date="字段 ReleaseDate 必须是日期。"
                     data-val-required="字段 ReleaseDate 是必需的"
-                    id="ReleaseDate" name="ReleaseDate" type="date" />*@
+                    id="ReleaseDate" name="ReleaseDate" value="@Model.ReleaseDate.ToString("yyyy-MM-dd")" />
 
             @Html.ValidationMessageFor(model => model.ReleaseDate)
         </div>
@@ -73,9 +73,14 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    @*<script>
-        $("#ReleaseDate").ready(function () {
-            document.getElementById("ReleaseDate").value = "@Model.ReleaseDate.ToString("yyyy-MM-dd")";
+    <link rel="stylesheet" href="~/Content/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="~/Content/themes/base/jquery.ui.datepicker.css">
+    <script src="~/Scripts/jquery-ui-1.8.24.js"></script>
+    <script>
+        $(function () {
+            $("#ReleaseDate").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
         });
-    </script>*@
+    </script>
 }

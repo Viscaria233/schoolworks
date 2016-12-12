@@ -12,7 +12,7 @@ namespace Test3_Movie.Controllers
     public class HomeController : Controller
     {
         private MovieDbContext db = new MovieDbContext();
-        private static Stack<List<int>> searchHistory = new Stack<List<int>>();
+        private static Stack<List<Movie>> searchHistory = new Stack<List<Movie>>();
         private static Stack<SearchInput> inputHistory = new Stack<SearchInput>();
 
         //
@@ -36,12 +36,8 @@ namespace Test3_Movie.Controllers
             else
             {
                 var peek = searchHistory.Peek();
-                var list = from m in db.Movies
-                           where peek.Contains(m.ID)
-                           select m;
-                return View(list);
+                return View(peek);
             }
-            
         }
 
         //
@@ -162,10 +158,11 @@ namespace Test3_Movie.Controllers
                 validMax = maxPrice != ""
             };
             inputHistory.Push(input);
-
             var searchUtil = new SearchUtil { input = input };
-            var result = searchUtil.search(db, searchHistory.Count != 0 ? searchHistory.Peek() : null);
+            var result = searchUtil.search(searchHistory.Count != 0 ?
+                searchHistory.Peek() : db.Movies.ToList());
             searchHistory.Push(result);
+
             return RedirectToAction("Index");
         }
 

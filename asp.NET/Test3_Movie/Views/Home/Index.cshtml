@@ -3,7 +3,6 @@
 @{
     ViewBag.Title = "MovieList";
 }
-
 <h2>MovieList</h2>
 
 <p>
@@ -43,12 +42,12 @@
                 <option value="true">>=</option>
                 <option value="false">></option>
             </select>&nbsp;
-            <input type="number" name="S_MinPrice" /> and&nbsp;
+            <input type="number" step="0.01" name="S_MinPrice" /> and&nbsp;
             <select id="S_IncludeMax" name="S_IncludeMax" size="1">
                 <option value="true"><=</option>
                 <option value="false"><</option>
             </select>&nbsp;
-            <input type="number" name="S_MaxPrice" />
+            <input type="number" step="0.01" name="S_MaxPrice" />
         </div>
         <input type="submit" value="Search" />
     </form>
@@ -108,14 +107,20 @@
                 var input = (Test3_Movie.Models.SearchInput)ViewData["Input"];
             }
             $(".search-genre-title").find("option[value='@input.genre']").attr("selected", "selected");
-            $("#S_Title").attr("value", "@input.title");
+            $("#S_Title").focusin(function () {
+                $(this).select();
+            }).attr("value", "@input.title");
             $(".search-released").find("input[value='@input.released']").attr("checked", "checked");
             $("#S_IncludeMin").find("option[value='@input.includeMin.ToString().ToLower()']")
                 .attr("selected", "selected");
             $("#S_IncludeMax").find("option[value='@input.includeMax.ToString().ToLower()']")
                 .attr("selected", "selected");
-            $("input[name='S_MinPrice']").attr("value", "@input.validMin" == "True" ? "@input.minPrice" : "");
-            $("input[name='S_MaxPrice']").attr("value", "@input.validMax" == "True" ? "@input.maxPrice" : "");
+            $("input[name='S_MinPrice']").focusin(function () {
+                $(this).select();
+            }).attr("value", "@input.validMin" == "True" ? "@input.minPrice" : "");
+            $("input[name='S_MaxPrice']").focusin(function () {
+                $(this).select();
+            }).attr("value", "@input.validMax" == "True" ? "@input.maxPrice" : "");
         });
     </script>
 }
